@@ -46,3 +46,19 @@ Projekt łączy w sobie narzędzia i praktyki DataOps oraz DevOps:
 5. Monitoruj wyniki i raporty w przygotowanym dashboardzie.
 
 ## Struktura projektu
+/crypto-futures-basis-analysis
+│
+├── dags/                    # DAG-i Apache Airflow do orkiestracji zadań
+├── azure_data_factory/      # Definicje pipeline’ów Azure Data Factory (JSON/YAML)
+├── scripts/                 # Skrypty Python do pobierania i analizy danych
+├── reports/                 # Raporty i wyniki analiz
+├── .github/workflows/       # Definicje GitHub Actions do CI/CD
+├── README.md                # Dokumentacja projektu
+└── requirements.txt         # Biblioteki Python do instalacji
+
+## Możliwości rozwoju
+
+- Dodanie monitoringu alertów cenowych,
+- Rozszerzenie o inne giełdy i typy kontraktów futures,
+- Integracja z Power BI dla interaktywnych dashboardów,
+- Użycie modeli machine learning do przewidywania zmian basis.
