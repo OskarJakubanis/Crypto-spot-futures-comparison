@@ -1,56 +1,48 @@
 # crypto-futures-basis-analysis
 
-Projekt łączy Apache Airflow, Azure Data Factory i GitHub Actions w celu automatycznej analizy różnic pomiędzy cenami Spot a Futures kryptowalut. Celem jest identyfikacja potencjalnych baniek i sygnałów short squeeze poprzez śledzenie top 3 największych dodatnich i ujemnych różnic (tzw. basis).
+## Opis projektu
 
-## 🔍 Cel analizy
+Projekt ma na celu analizę różnic (basis) między cenami spot a futures wybranych kryptowalut na giełdzie Binance. Celem jest identyfikacja top 3 największych dodatnich i ujemnych odchyleń, co pozwala na ocenę rynkowych anomalii i potencjalnych strategii tradingowych.
 
-Na rynku krypto różnica pomiędzy ceną spot a futures może sugerować:
-- Spekulację (bańka) — futures > spot
-- Panikę / short squeeze — futures < spot
+Projekt łączy w sobie narzędzia i praktyki DataOps oraz DevOps:
 
-Codziennie analizujemy:
-- Top 3 największe dodatnie różnice (potencjalne bańki)
-- Top 3 największe ujemne różnice (potencjalne short squeeze)
+- **Apache Airflow** do orkiestracji zadań i automatyzacji pipeline’u danych,
+- **Azure Data Factory** jako alternatywna platforma orkiestracji chmurowej,
+- **GitHub Actions** do CI/CD i automatyzacji procesu wdrażania,
+- Pobieranie danych z Binance Futures API oraz Binance Spot API,
+- Przetwarzanie i analiza danych w Pythonie,
+- Raportowanie wyników i wizualizacja trendów.
 
-## ⚙️ Stack technologiczny
+## Cel biznesowy
 
-- **Apache Airflow** — harmonogram pobierania danych i orkiestracja zadań
-- **Azure Data Factory** — alternatywny potok chmurowy ETL
-- **GitHub Actions** — CI/CD (testy, update danych, push do repo)
-- **Python** — pobieranie i czyszczenie danych z CoinGecko
-- **Jupyter Notebook** — analiza i wykresy
-- **CSV / JSON** — przechowywanie danych
+- Monitorowanie i szybka identyfikacja anomalii cenowych na rynku kryptowalut,
+- Dostarczenie narzędzia do oceny odchyleń między rynkiem spot i futures,
+- Automatyzacja procesu analizy z zapewnieniem ciągłej aktualizacji danych.
 
-## 📦 Jak to działa?
+## Główne komponenty
 
-1. GitHub Action uruchamia workflow codziennie o 7:00
-2. Airflow DAG pobiera dane z CoinGecko API (spot + futures)
-3. Porównuje ceny i tworzy ranking odchyleń
-4. Zapisuje wyniki do pliku CSV
-5. Azure Data Factory może alternatywnie pobierać dane i zapisywać do blob storage
-6. Jupyter Notebook prezentuje analizę z plików CSV
+1. **Pobieranie danych** – automatyczne pobieranie aktualnych cen spot i futures z Binance API,
+2. **Przetwarzanie danych** – czyszczenie, łączenie i obliczanie basis (różnicy procentowej między futures a spot),
+3. **Analiza** – wyliczenie top 3 pozycji z największymi dodatnimi i ujemnymi odchyleniami,
+4. **Orkiestracja** – zarządzanie pipeline’em za pomocą Airflow oraz Azure Data Factory,
+5. **CI/CD** – automatyczne testy, walidacje i wdrażanie pipeline’u przy pomocy GitHub Actions,
+6. **Raportowanie** – generowanie raportów oraz dashboardów do monitoringu trendów.
 
-## 📈 Przykładowy wynik
+## Wymagania
 
-| Token | Spot Price | Futures Price | Difference (%) |
-|-------|------------|---------------|----------------|
-| BTC   | 31,000     | 32,200        | +3.87%         |
-| ETH   | 2,100      | 1,980         | -5.71%         |
+- Python 3.8+
+- Apache Airflow
+- Azure Data Factory (konto i konfiguracja)
+- GitHub Actions (repozytorium GitHub)
+- Dostęp do Binance API (klucz API dla futures i spot)
+- Biblioteki Python: `requests`, `pandas`, `apache-airflow`, `azure-identity`, `pyyaml` itp.
 
-## 📁 Foldery
+## Instrukcja uruchomienia
 
-- `dags/` — skrypty Airflow
-- `data/` — automatycznie aktualizowane pliki .csv
-- `notebooks/` — analiza danych
-- `reports/` — końcowe wyniki
-- `.github/workflows/` — CI/CD z GitHub Actions
+1. Skonfiguruj połączenie z Binance API i ustaw odpowiednie zmienne środowiskowe z kluczami API,
+2. Skonfiguruj Apache Airflow oraz Azure Data Factory z podanymi DAG-ami i pipeline’ami,
+3. Skonfiguruj GitHub Actions w repozytorium, aby automatyzować wdrożenia,
+4. Uruchom pipeline w Airflow lub Azure Data Factory,
+5. Monitoruj wyniki i raporty w przygotowanym dashboardzie.
 
-## ✅ Status
-
-🟢 Wersja MVP ukończona. Codzienne pobieranie i analiza działają automatycznie.
-
-## 📌 Do zrobienia
-
-- Integracja z Azure Blob Storage (opcjonalnie)
-- Automatyczne generowanie wykresów
-- Dashboard w Power BI lub Streamlit
+## Struktura projektu
