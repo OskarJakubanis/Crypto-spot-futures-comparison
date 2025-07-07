@@ -1,5 +1,4 @@
-# fetch_data.py
-# this script:
+# This script:
 #1. Fetches current spot and futures prices from Binance REST APIs,
 #2. logs info about the fetched data,
 #3. handles errors gracefully,
