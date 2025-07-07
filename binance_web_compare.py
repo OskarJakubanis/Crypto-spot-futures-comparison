@@ -2,118 +2,135 @@ import requests
 import logging
 from flask import Flask, render_template_string
 
-logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-BINANCE_API_URL = "https://api.binance.com/api/v3/ticker/price"
-BINANCE_FUTURES_API_URL = "https://fapi.binance.com/fapi/v1/ticker/price"
+BINANCE_SPOT_API = "https://api.binance.com/api/v3/ticker/price"
+BINANCE_FUTURES_API = "https://fapi.binance.com/fapi/v1/ticker/price"
+BINANCE_FUTURES_INFO = "https://fapi.binance.com/fapi/v1/exchangeInfo"
+
+app = Flask(__name__)
 
 def fetch_spot_data():
     try:
-        response = requests.get(BINANCE_API_URL)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get(BINANCE_SPOT_API)
+        resp.raise_for_status()
+        data = resp.json()
         logger.info(f"Fetched {len(data)} spot records")
         return data
-    except requests.RequestException as e:
-        logger.error(f"Error fetching spot data: {e}")
+    except Exception as e:
+        logger.error(f"Spot fetch error: {e}")
         return []
 
 def fetch_futures_data():
     try:
-        response = requests.get(BINANCE_FUTURES_API_URL)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get(BINANCE_FUTURES_API)
+        resp.raise_for_status()
+        data = resp.json()
         logger.info(f"Fetched {len(data)} futures records")
         return data
-    except requests.RequestException as e:
-        logger.error(f"Error fetching futures data: {e}")
+    except Exception as e:
+        logger.error(f"Futures fetch error: {e}")
         return []
 
-def filter_and_compare(spot_data, futures_data):
-    # Map symbol -> price for futures for quick lookup
+def fetch_futures_info():
+    try:
+        resp = requests.get(BINANCE_FUTURES_INFO)
+        resp.raise_for_status()
+        data = resp.json()
+        logger.info("Fetched futures exchange info")
+        return data.get("symbols", [])
+    except Exception as e:
+        logger.error(f"Futures info fetch error: {e}")
+        return []
+
+def filter_active_futures_symbols(futures_info):
+    # We take only symbols with status 'TRADING'
+    active_symbols = {item['symbol'] for item in futures_info if item.get('status') == 'TRADING'}
+    return active_symbols
+
+def match_suffix(symbol):
+    # Extract USDT or USDC suffix (or other stablecoin suffix if needed)
+    # Assuming symbol ends with one of these suffixes (USDT, USDC)
+    for suffix in ["USDT", "USDC"]:
+        if symbol.endswith(suffix):
+            return suffix
+    return None
+
+@app.route("/")
+def home():
+    spot_data = fetch_spot_data()
+    futures_data = fetch_futures_data()
+    futures_info = fetch_futures_info()
+    active_futures = filter_active_futures_symbols(futures_info)
+
+    # Convert futures and spot lists to dict for quick lookup by symbol
+    spot_dict = {item['symbol']: float(item['price']) for item in spot_data}
     futures_dict = {item['symbol']: float(item['price']) for item in futures_data}
 
     results = []
-    for spot in spot_data:
-        symbol = spot['symbol']
-        spot_price = float(spot['price'])
+    for symbol, spot_price in spot_dict.items():
+        suffix = match_suffix(symbol)
+        if not suffix:
+            continue  # skip symbols without USDT or USDC suffix
 
-        # Check if futures have exact same symbol
-        futures_price = futures_dict.get(symbol)
-        if futures_price is None:
-            continue
+        # Only compare if futures has the exact same symbol and it is active
+        if symbol in active_futures and symbol in futures_dict:
+            futures_price = futures_dict[symbol]
+            # Calculate percentage difference: ((futures - spot) / spot) * 100
+            if spot_price != 0:
+                diff_percent = ((futures_price - spot_price) / spot_price) * 100
+            else:
+                diff_percent = 0
+            results.append({
+                "symbol": symbol,
+                "spot": spot_price,
+                "futures": futures_price,
+                "diff": diff_percent
+            })
 
-        # Check if stablecoin suffix matches (e.g. USDT == USDT, USDC == USDC)
-        # Extract suffix after last 3 or 4 chars: common stablecoins are USDT (4 chars) or USDC (4 chars)
-        # We can compare last 4 chars here
-        suffix_spot = symbol[-4:]
-        suffix_futures = symbol[-4:]
-        if suffix_spot != suffix_futures:
-            continue
+    # Sort results by absolute difference desc
+    results.sort(key=lambda x: abs(x["diff"]), reverse=True)
 
-        diff_percent = ((futures_price - spot_price) / spot_price) * 100
-        results.append({
-            'symbol': symbol,
-            'spot': spot_price,
-            'futures': futures_price,
-            'diff_percent': diff_percent
-        })
-
-    # Sort by absolute difference descending
-    results.sort(key=lambda x: abs(x['diff_percent']), reverse=True)
-    return results
-
-app = Flask(__name__)
-
-HTML_TEMPLATE = """
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>Binance Spot vs Futures Comparison</title>
-    <style>
-        body { font-family: monospace; margin: 20px; }
+    # Simple HTML table template
+    html = """
+    <html>
+    <head>
+      <title>Binance Spot vs Futures Comparison</title>
+      <meta http-equiv="refresh" content="60">
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: right; }
-        th { background-color: #f0f0f0; }
+        th { background: #333; color: white; }
         td.symbol { text-align: left; font-weight: bold; }
-    </style>
-    <meta http-equiv="refresh" content="10" />
-</head>
-<body>
-    <h2>Binance Spot vs Futures Comparison</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Symbol</th>
-                <th>Spot Price</th>
-                <th>Futures Price</th>
-                <th>Difference (%)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                <td class="symbol">{{ row.symbol }}</td>
-                <td>{{ "%.6f"|format(row.spot) }}</td>
-                <td>{{ "%.6f"|format(row.futures) }}</td>
-                <td>{{ "%.2f"|format(row.diff_percent) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p>Data auto-refreshes every 10 seconds.</p>
-</body>
-</html>
-"""
+        tr:nth-child(even) { background: #f9f9f9; }
+      </style>
+    </head>
+    <body>
+      <h1>Binance Spot vs Futures Price Differences (USDT/USDC only)</h1>
+      <p>Auto-refresh every 60 seconds</p>
+      <table>
+        <tr>
+          <th>Symbol</th>
+          <th>Spot Price</th>
+          <th>Futures Price</th>
+          <th>Diff (%)</th>
+        </tr>
+        {% for row in results %}
+        <tr>
+          <td class="symbol">{{row.symbol}}</td>
+          <td>{{"%.6f"|format(row.spot)}}</td>
+          <td>{{"%.6f"|format(row.futures)}}</td>
+          <td style="color: {{'green' if row.diff >= 0 else 'red'}}">{{"%.2f"|format(row.diff)}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </body>
+    </html>
+    """
 
-@app.route("/")
-def index():
-    spot_data = fetch_spot_data()
-    futures_data = fetch_futures_data()
-    comparison = filter_and_compare(spot_data, futures_data)
-    return render_template_string(HTML_TEMPLATE, data=comparison)
+    return render_template_string(html, results=results)
 
 if __name__ == "__main__":
     app.run(debug=True)
