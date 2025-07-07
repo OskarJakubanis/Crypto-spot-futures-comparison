@@ -1,5 +1,5 @@
-# Plan: Stworzyć aplikację Flask, która pobiera dane spot i futures z Binance i Bybit,
-# filtruje wspólne symbole (USDT/USDC), porównuje ceny i wyświetla jedną tabelę z kolumnami:
+# Plan: Build a Flask web application that fetches spot and futures prices from Binance and Bybit,
+# filters for common symbols ending in USDT/USDC, compares the prices, and displays a single table with columns:
 # Symbol, Binance Spot, Binance Futures, Bybit Spot, Bybit Futures, Diff (Binance), Diff (Bybit)
 
 import requests
