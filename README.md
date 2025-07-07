@@ -1,64 +1,40 @@
-# crypto-futures-basis-analysis
+# 🚀 Crypto Spot vs Futures Price Comparison 📈
 
-## Opis projektu
+This project is a simple Flask web app that compares **spot** and **futures** prices from two of the biggest crypto platforms: **Binance** and **Bybit**. It shows you a handy table with current prices and the difference between spot and futures for both platforms.
 
-Projekt ma na celu analizę różnic (basis) między cenami spot a futures wybranych kryptowalut na giełdzie Binance. Celem jest identyfikacja top 3 największych dodatnich i ujemnych odchyleń, co pozwala na ocenę rynkowych anomalii i potencjalnych strategii tradingowych.
+## 💡 What It Does
 
-Projekt łączy w sobie narzędzia i praktyki DataOps oraz DevOps:
+- 🔍 Fetches spot and futures prices from Binance & Bybit APIs  
+- 🔄 Filters symbols ending with **USDT** or **USDC**  
+- 📊 Displays a table with these columns:
+  - Symbol
+  - Binance Spot Price
+  - Binance Futures Price
+  - Bybit Spot Price
+  - Bybit Futures Price
+  - % Difference (Binance futures vs spot)
+  - % Difference (Bybit futures vs spot)
 
-- **Apache Airflow** do orkiestracji zadań i automatyzacji pipeline’u danych,
-- **Azure Data Factory** jako alternatywna platforma orkiestracji chmurowej,
-- **GitHub Actions** do CI/CD i automatyzacji procesu wdrażania,
-- Pobieranie danych z Binance Futures API oraz Binance Spot API,
-- Przetwarzanie i analiza danych w Pythonie,
-- Raportowanie wyników i wizualizacja trendów.
+### 📈 Why It Matters?
 
-## Cel biznesowy
+- A **higher positive difference** means futures prices are above spot prices → usually a bullish sign, market expects prices to rise 🚀  
+- A **negative difference** means futures prices are below spot prices → could signal bearish sentiment, market expects a drop 📉  
 
-- Monitorowanie i szybka identyfikacja anomalii cenowych na rynku kryptowalut,
-- Dostarczenie narzędzia do oceny odchyleń między rynkiem spot i futures,
-- Automatyzacja procesu analizy z zapewnieniem ciągłej aktualizacji danych.
+This info can help you make smarter trading decisions and understand market sentiment better! 🎯
 
-## Główne komponenty
+## ⚙️ How to Run
 
-1. **Pobieranie danych** – automatyczne pobieranie aktualnych cen spot i futures z Binance API,
-2. **Przetwarzanie danych** – czyszczenie, łączenie i obliczanie basis (różnicy procentowej między futures a spot),
-3. **Analiza** – wyliczenie top 3 pozycji z największymi dodatnimi i ujemnymi odchyleniami,
-4. **Orkiestracja** – zarządzanie pipeline’em za pomocą Airflow oraz Azure Data Factory,
-5. **CI/CD** – automatyczne testy, walidacje i wdrażanie pipeline’u przy pomocy GitHub Actions,
-6. **Raportowanie** – generowanie raportów oraz dashboardów do monitoringu trendów.
+1. Make sure you have Python (3.7+) installed 🐍  
+2. Install dependencies with: pip install -r requirements.txt
+3. Run the app: python crypto_compare.py
+4. Open your browser and go to:
+   👉 **[http://127.0.0.1:5000/](http://127.0.0.1:5000/)** (This is your local address where the app runs. Every user running it locally will use the same link on their own machine.)  
+5. Refresh the page whenever you want the latest prices 🔄
 
-## Wymagania
+---
 
-- Python 3.8+
-- Apache Airflow
-- Azure Data Factory (konto i konfiguracja)
-- GitHub Actions (repozytorium GitHub)
-- Dostęp do Binance API (klucz API dla futures i spot)
-- Biblioteki Python: `requests`, `pandas`, `apache-airflow`, `azure-identity`, `pyyaml` itp.
+Feel free to expand it with more exchanges or features! Good luck and happy trading! 💰🔥
 
-## Instrukcja uruchomienia
+---
 
-1. Skonfiguruj połączenie z Binance API i ustaw odpowiednie zmienne środowiskowe z kluczami API,
-2. Skonfiguruj Apache Airflow oraz Azure Data Factory z podanymi DAG-ami i pipeline’ami,
-3. Skonfiguruj GitHub Actions w repozytorium, aby automatyzować wdrożenia,
-4. Uruchom pipeline w Airflow lub Azure Data Factory,
-5. Monitoruj wyniki i raporty w przygotowanym dashboardzie.
-
-## Struktura projektu
-/crypto-futures-basis-analysis
-│
-├── dags/                    # DAG-i Apache Airflow do orkiestracji zadań
-├── azure_data_factory/      # Definicje pipeline’ów Azure Data Factory (JSON/YAML)
-├── scripts/                 # Skrypty Python do pobierania i analizy danych
-├── reports/                 # Raporty i wyniki analiz
-├── .github/workflows/       # Definicje GitHub Actions do CI/CD
-├── README.md                # Dokumentacja projektu
-└── requirements.txt         # Biblioteki Python do instalacji
-
-## Możliwości rozwoju
-
-- Dodanie monitoringu alertów cenowych,
-- Rozszerzenie o inne giełdy i typy kontraktów futures,
-- Integracja z Power BI dla interaktywnych dashboardów,
-- Użycie modeli machine learning do przewidywania zmian basis.
+**Please contact me with any questions, suggestions, or feedback!** I’m happy to help and improve this tool. 😊
