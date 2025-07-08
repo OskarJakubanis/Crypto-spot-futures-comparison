@@ -104,8 +104,6 @@ def fetch_bybit():
 
     return spot_dict, futs_dict
 
-@app.route("/")
-
 #ADDED
 def get_trade_action(spot, fut, spot_change, fut_change):
     diff = ((fut - spot) / spot) * 100 if spot != 0 else 0
@@ -123,6 +121,7 @@ def get_trade_action(spot, fut, spot_change, fut_change):
 
 #END ADDED
 
+@app.route("/")
 
 def compare():
     b_spot, b_fut = fetch_binance()
