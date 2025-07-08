@@ -32,6 +32,7 @@ TEMPLATE = """
                 <th>Bbt Futures</th>
                 <th class="blue-bg">Diff % (Bbt)</th>
                 <th class="yellow-bg">Δ24h (Bbt)</th>
+                <th>Trade</th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +47,7 @@ TEMPLATE = """
                 <td>{{ "%.6f"|format(row.bbt_fut) }}</td>
                 <td class="blue-bg">{{ "%.2f"|format(row.diff_bbt) }}</td>
                 <td class="yellow-bg">{{ "%.2f"|format(row.change_24h_bbt) }}</td>
+                <td>{{ row.trade }}</td>
             </tr>
             {% endfor %}
         </tbody>
