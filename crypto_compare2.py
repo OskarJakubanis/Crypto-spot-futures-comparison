@@ -105,6 +105,25 @@ def fetch_bybit():
     return spot_dict, futs_dict
 
 @app.route("/")
+
+#ADDED
+def get_trade_action(spot, fut, spot_change, fut_change):
+    diff = ((fut - spot) / spot) * 100 if spot != 0 else 0
+
+    if diff > 0.5 and fut_change > 0:
+        return "Buy Futures"
+    elif diff < -0.5 and fut_change < 0:
+        return "Short Futures"
+    elif spot_change > 0 and abs(diff) < 0.5:
+        return "Buy Spot"
+    elif spot_change < 0:
+        return "Avoid or Sell Spot"
+    else:
+        return ""
+
+#END ADDED
+
+
 def compare():
     b_spot, b_fut = fetch_binance()
     y_spot, y_fut = fetch_bybit()
@@ -140,7 +159,8 @@ def compare():
             'bbt_spot': ys,
             'bbt_fut': yf,
             'diff_bbt': diff_y,
-            'change_24h_bbt': change_24h_bbt
+            'change_24h_bbt': change_24h_bbt,
+            'trade': get_trade_action(bs, bf, bc_24h_spot, bc_24h_fut)
         })
 
     # Sort by Binance Diff % descending
