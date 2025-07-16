@@ -162,7 +162,7 @@ def compare():
             'bbt_fut': yf,
             'diff_bbt': diff_y,
             'change_24h_bbt': change_24h_bbt,
-            'trade': get_trade_action(spot, fut, bc_24h_spot, bc_24h_fut)
+            'trade': get_trade_action(bs, bf, bc_24h_spot, bc_24h_fut)
         })
 
     # Sort by Binance Diff % descending
