@@ -142,47 +142,44 @@ def compare():
     b_spot, b_fut = fetch_binance()
     y_spot, y_fut = fetch_bybit()
 
-    # Find symbols that exist in all 4 datasets: Binance spot, Binance futures, Bybit spot, and Bybit futures
     symbols = set(b_spot.keys()) & set(b_fut.keys()) & set(y_spot.keys()) & set(y_fut.keys())
 
-    # Create an empty list to store processed data rows for the table
     results = []
 
-
     # Loop through each symbol in alphabetical order and get Binance spot and futures prices
-  for sym in sorted(symbols): 
+    for sym in sorted(symbols):
 
-    # Get spot and futures prices + 24h change for Binance
-    bs = b_spot[sym]['price']
-    bf = b_fut[sym]['price']
-    bc_24h_spot = b_spot[sym]['change_24h']     
-    bc_24h_fut = b_fut[sym]['change_24h']      
+        # Get spot and futures prices + 24h change for Binance
+        bs = b_spot[sym]['price']
+        bf = b_fut[sym]['price']
+        bc_24h_spot = b_spot[sym]['change_24h']
+        bc_24h_fut = b_fut[sym]['change_24h']
 
-    # Get spot and futures prices + 24h change for Bybit
-    ys = y_spot[sym]['price']
-    yf = y_fut[sym]['price']
-    yb_24h_spot = y_spot[sym]['change_24h']   
-    yb_24h_fut = y_fut[sym]['change_24h']      
+        # Get spot and futures prices + 24h change for Bybit
+        ys = y_spot[sym]['price']
+        yf = y_fut[sym]['price']
+        yb_24h_spot = y_spot[sym]['change_24h']
+        yb_24h_fut = y_fut[sym]['change_24h']
 
-    # Calculate the percentage difference between futures and spot (for Binance and Bybit)
-    diff_b = ((bf - bs) / bs) * 100 if bs != 0 else 0
-    diff_y = ((yf - ys) / ys) * 100 if ys != 0 else 0
+        # Calculate the percentage difference between futures and spot (for Binance and Bybit)
+        diff_b = ((bf - bs) / bs) * 100 if bs != 0 else 0
+        diff_y = ((yf - ys) / ys) * 100 if ys != 0 else 0
 
-    # Add one row of data to the results list (used later to render the table)
-    results.append({
-        'symbol': sym,
-        'bnc_spot': bs,
-        'bnc_fut': bf,
-        'diff_bnc': diff_b,
-        'change_24h_spot_bnc': bc_24h_spot,    
-        'change_24h_fut_bnc': bc_24h_fut, 
-        'bbt_spot': ys,
-        'bbt_fut': yf,
-        'diff_bbt': diff_y,
-        'change_24h_spot_bbt': yb_24h_spot,   
-        'change_24h_fut_bbt': yb_24h_fut,     
-        'trade': get_trade_action(bs, bf, bc_24h_spot, bc_24h_fut)
-    })
+        # Add one row of data to the results list (used later to render the table)
+        results.append({
+            'symbol': sym,
+            'bnc_spot': bs,
+            'bnc_fut': bf,
+            'diff_bnc': diff_b,
+            'change_24h_bnc': bc_24h_spot,
+            'change_24h_fut_bnc': bc_24h_fut,
+            'bbt_spot': ys,
+            'bbt_fut': yf,
+            'diff_bbt': diff_y,
+            'change_24h_bbt': yb_24h_spot,
+            'change_24h_fut_bbt': yb_24h_fut,
+            'trade': get_trade_action(bs, bf, bc_24h_spot, bc_24h_fut)
+        })
 
     # Sort the results list in descending order so that symbols with the largest Binance spot-futures percentage difference come first
     results.sort(key=lambda x: x['diff_bnc'], reverse=True)
