@@ -25,22 +25,20 @@ Dependencies are listed in [`requirements.txt`](./requirements.txt).
 
 ---
 
+## 📁 File Overview
+
+- `crypto_compare1.py` – Main app – fetches prices, computes % differences, renders the table  
+- `requirements.txt` – Python packages needed to run the app  
+- `README.md` – Project overview and usage instructions
+
+---
+
 ## 🚀 How to Run
 
 1. Clone the repository.
 2. Install requirements: pip install -r requirements.txt.
-3. Run the app: python crypto_compare1.py.
+3. Run the app: python crypto_compare.py.
 4. Visit in your browser: http://127.0.0.1:5000.
-
----
-
-## 📁 File Overview
-
-| File               | Description                                                             |
-|--------------------|-------------------------------------------------------------------------|
-| `crypto_compare1.py` | Main app – fetches prices, computes % differences, renders the table     |
-| `requirements.txt`  | Python packages needed to run the app                                   |
-| `README.md`         | Project overview and usage instructions                                 |
 
 ---
 
