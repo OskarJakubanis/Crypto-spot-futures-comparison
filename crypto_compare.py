@@ -1,3 +1,8 @@
+# Crypto basis comparison app
+# Fetches spot & futures prices from Binance and Bybit
+# Shows price differences for USDT/USDC pairs in a table
+# Built with Flask and Requests
+
 # Import necessary libraries:
 import requests # - requests: to fetch data from external APIs
 from flask import Flask, render_template_string # - Flask: to create a simple web application / render_template_string: to render HTML templates directly from a string
