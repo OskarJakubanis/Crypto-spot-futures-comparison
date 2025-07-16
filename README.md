@@ -33,6 +33,19 @@ This info can help you make smarter trading decisions and understand market sent
 
 ---
 
+## 🎯 Final Outcome: How to Interpret Trading Signals?
+Based on the difference between spot and futures prices and the 24-hour price changes, the app provides simple trading recommendations.
+
+Condition	Recommendation	What It Means  
+Futures > Spot by more than 0.5% and futures 24h change > 0	Buy Futures	Bullish market, buy futures contracts  
+Futures < Spot by more than 0.5% and futures 24h change < 0	Short Futures	Bearish market, short futures contracts  
+Spot 24h change > 0 and futures vs spot difference < 0.5%	Buy Spot	Market rising but futures close to spot, buy spot  
+Spot 24h change < 0	Avoid or Sell Spot	Market falling, avoid or sell spot  
+
+## 🔍 Example Table:  
+![KRYPTO](https://github.com/user-attachments/assets/78649c5c-c615-42ef-b261-7e875a2d30c2)
+
+
 Feel free to expand it with more exchanges or features! Good luck and happy trading! 💰🔥
 
 ---
