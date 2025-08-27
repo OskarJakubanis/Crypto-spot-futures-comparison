@@ -40,6 +40,9 @@ Dependencies are listed in [`requirements.txt`](./requirements.txt).
 3. Run the app: python crypto_compare.py.
 4. Visit in your browser: http://127.0.0.1:5000.
 
+*In `.py` files, `#` comments show step-by-step procedures.*  
+*Refer to `used_functions.md` for an overview of key Python and library functions used.*  
+
 ---
 
 ## 💡 Example
